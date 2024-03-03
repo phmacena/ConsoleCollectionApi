@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const productRoutes = require('./routes/productRoutes');
 
 // Connect to MongoDB
-const dbURI = 'mongodb+srv://phmacena:teste123@inventorymanagementapi.gx0cih4.mongodb.net/InventoryManagementAPI';
+const dbURI = 'mongodb+srv://phmacena:teste123@consolecollectionapi.c6bkvtk.mongodb.net/ConsoleCollectionAPI';
 mongoose.connect(dbURI)
   .then(() => {
     console.log('Connected to MongoDB');
