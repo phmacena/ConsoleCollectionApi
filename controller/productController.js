@@ -1,6 +1,10 @@
 const { Product, joiCreateProductSchema, joiUpdateProductSchema } = require('../models/productSchema');
 
-const createProduct = function (req, res) {
+function createProduct(req, res) {
+  //Validating query parameter
+  if (Object.keys(req.query).length > 0) {
+    return res.status(400).json({ error: "Query parameters are not allowed for this endpoint" });
+  }
   // Validate Request Body Parameters
   const validationResult = joiCreateProductSchema.validate(req.body);
   if (validationResult.error) {
@@ -18,7 +22,11 @@ const createProduct = function (req, res) {
       res.status(500).json({ error: 'Internal server error' });
     });
 };
-const getProduct = function (req, res) {
+function getProducts(req, res) {
+  //Validating query parameter
+  if (Object.keys(req.query).length > 0) {
+    return res.status(400).json({ error: "Query parameters are not allowed for this endpoint" });
+  }
   Product.find().sort({ createdAt: -1 })
     .then((result) => {
       res.status(200).json(result);
@@ -28,8 +36,16 @@ const getProduct = function (req, res) {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 };
-const getProductById = function (req, res) {
-  const id = req.params.id;
+function getProductById(req, res) {
+  //Validating query parameter
+  if (!req.query.id || Object.keys(req.query).length > 1) {
+    return res.status(400).json({
+      'error': 'Please provide a valid query parameter'
+    });
+  }
+
+  const id = req.query.id;
+
   Product.findById(id)
     .then((result) => {
       if (!result) {
@@ -43,14 +59,21 @@ const getProductById = function (req, res) {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 };
-const updateProductById = function (req, res) {
+function updateProductById(req, res) {
+  //Validating query parameter
+  if (!req.query.id || Object.keys(req.query).length > 1) {
+    return res.status(400).json({
+      'error': 'Please provide a valid query parameter'
+    });
+  }
+
   // Validate Request Body Parameters
   const validationResult = joiUpdateProductSchema.validate(req.body);
   if (validationResult.error) {
     return res.status(400).json({ error: validationResult.error.details });
   }
   // Continuing
-  const id = req.params.id;
+  const id = req.query.id;
   Product.findByIdAndUpdate(id, req.body, { new: true })
     .then((result) => {
       if (!result) {
@@ -65,8 +88,14 @@ const updateProductById = function (req, res) {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 };
-const deleteProductById = function (req, res) {
-  const id = req.params.id;
+function deleteProductById(req, res) {
+  //Validating query parameter
+  if (!req.query.id || Object.keys(req.query).length > 1) {
+    return res.status(400).json({
+      'error': 'Please provide a valid query parameter'
+    });
+  }
+  const id = req.query.id;
   Product.findByIdAndDelete(id)
     .then((result) => {
       if (!result) {
@@ -83,7 +112,7 @@ const deleteProductById = function (req, res) {
 
 module.exports = {
   createProduct,
-  getProduct,
+  getProducts,
   getProductById,
   deleteProductById,
   updateProductById
