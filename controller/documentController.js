@@ -14,6 +14,20 @@ function createDocument(productId, req, res) {
       'error': 'Missing document file'
     })
   };
+  //Validating file size
+  const maxFileSizeBytes = 10 * 1024 * 1024;
+  if (req.file.size > maxFileSizeBytes) {
+    return res.status(400).json({
+      'error': 'File size exceeds the maxium allowed size of 10MB'
+    })
+  };
+  //Validating file format
+  const allowedFormats = ['image/jpeg', 'image/png']
+  if (!allowedFormats.includes(req.file.mimetype)) {
+    return res.status(400).json({
+      'error': 'File format must be image/jpeg or image/png'
+    })
+  }
   // Generate a UUIDv4
   const documentPath = uuidv4();
   const documentUrl = `http://localhost:3000/v1/${documentPath}`
